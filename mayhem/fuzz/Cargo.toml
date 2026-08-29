@@ -1,0 +1,36 @@
+# Additive fuzz crate for the Mayhem integration. Lives under mayhem/fuzz/ and is
+# NEVER part of the upstream nearcore workspace. It depends on the UNMODIFIED
+# near-primitives crate at core/primitives and exercises its borsh transaction
+# decoder (borsh::from_slice::<SignedTransaction>, which drives the hand-written
+# `impl BorshDeserialize for Transaction` V0/V1 version-discrimination logic).
+#
+# The standalone [workspace] table keeps this crate OUT of nearcore's root
+# workspace resolution (nearcore pins rust-toolchain = 1.95.0; we build with an
+# explicit nightly via RUSTUP_TOOLCHAIN, see mayhem/build.sh). Nothing upstream is
+# touched — this crate only CALLS near_primitives.
+[package]
+name = "nearcore-mayhem-fuzz"
+version = "0.0.0"
+publish = false
+edition = "2021"
+
+[package.metadata]
+cargo-fuzz = true
+
+[dependencies]
+libfuzzer-sys = "0.4"
+borsh = "1"
+
+[dependencies.near-primitives]
+path = "../../core/primitives"
+default-features = false
+
+# Keep this crate out of the nearcore root workspace's resolution.
+[workspace]
+members = ["."]
+
+[[bin]]
+name = "decode_signed_transaction"
+path = "fuzz_targets/decode_signed_transaction.rs"
+test = false
+doc = false

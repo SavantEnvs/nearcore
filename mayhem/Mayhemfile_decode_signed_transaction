@@ -1,0 +1,16 @@
+# nearcore in-process libFuzzer target (cargo-fuzz / libfuzzer-sys).
+# Feeds fuzz bytes into near_primitives' borsh SignedTransaction decoder
+# (borsh::from_slice::<SignedTransaction> -> the hand-written V0/V1 version
+# discrimination in impl BorshDeserialize for Transaction) and asserts borsh's
+# canonical round-trip on any input that decodes.
+project: savantenvs/nearcore
+target: decode_signed_transaction
+image: savantenvs/nearcore:latest
+
+cmds:
+  - cmd: /mayhem/decode_signed_transaction
+    libfuzzer: true
+
+testsuite:
+  - https://$MAYHEM_DOMAIN/$MAYHEM_PROJECT/$MAYHEM_TARGET/testsuite.tar
+  - file://mayhem/decode_signed_transaction/testsuite

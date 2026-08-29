@@ -1,0 +1,3 @@
+# Keep cargo build artifacts of the additive crates out of the integration commit.
+fuzz/target/
+kat/target/
