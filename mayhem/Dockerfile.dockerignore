@@ -1,0 +1,13 @@
+# Per-Dockerfile ignore for `docker build -f mayhem/Dockerfile .`. BuildKit gives this
+# file precedence over the repo-root .dockerignore, whose `.git/` exclusion would break
+# our build: the mayhem.yml CI checkout is fetch-depth 0 and the Dockerfile COPYs .git
+# into /mayhem (the grader / PATCH tier need the full `mayhem` branch history).
+#
+# So we KEEP .git and the whole source tree (near-primitives' path-dep chain spans many
+# core/ + utils/ crates) and only drop build artifacts.
+**/target
+mayhem/fuzz/target
+mayhem/kat/target
+.idea/
+.vscode/
+*.swp
